@@ -23,11 +23,17 @@ public class ClientGui extends Application {
     }
 
     private int time_client=0;
-    private boolean enough = false;
-    private SimpleDateFormat dt = new SimpleDateFormat("hh:mm:ss");
+    private final boolean enough = false;
+    private final SimpleDateFormat dt = new SimpleDateFormat("hh:mm:ss");
     private Text txtTime;
     private Client client;
     private Button b;
+
+    /**
+     *
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         this.client = new Client(this);
@@ -42,14 +48,24 @@ public class ClientGui extends Application {
         root.setBottom(this.b);
         return root;
     }
+
+    /**
+     * Some unknown error occurred so I set special method that only calls another method on client obj.
+     * Really idk why simple call dont work.
+     */
     private void test0(){
         this.client.callServer();
     }
 
 
+    /**
+     * Purpose of this method is to build a stage.
+     * Method test0 is called when button is pressed.
+     *
+     * @param stage
+     */
     private void setStage(Stage stage)
     {
-        //this.window = this.getTextArea();
         this.txtTime = new Text();
         this.txtTime.setStyle("-fx-text-fill: black; -fx-font-size: 25;");
         this.b = new Button("button");
@@ -58,7 +74,6 @@ public class ClientGui extends Application {
                 test0();
             }
         };
-
         b.setOnAction(event);
         Scene scene = new Scene(this.getRoot(), 600, 600);
         stage.setScene(scene);
@@ -67,6 +82,10 @@ public class ClientGui extends Application {
         startTimer();
         stage.show();
     }
+
+    /**
+     * startTimer start timer on client rly
+     */
     private void startTimer(){
         Thread timer = new Thread(() -> {
             while (!enough) {
@@ -76,13 +95,13 @@ public class ClientGui extends Application {
                     // running "long" operation not on UI thread
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
+                    System.out.println("Timer exception: "
+                            + ex.getMessage());
                 }
                 final String time = dt.format(time_client);
                 Platform.runLater(() -> {
                     // updating live UI object requires JavaFX App Thread
                     txtTime.setText(time);
-                    //testt();
-
                 });
             }
         });

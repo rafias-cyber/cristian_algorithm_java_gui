@@ -35,13 +35,17 @@ public class FxSample extends Application {
     }
 
     private int time_server=10000;
-    private boolean enough = false;
-    private SimpleDateFormat dt = new SimpleDateFormat("hh:mm:ss");
+    private final boolean enough = false;
+    private final SimpleDateFormat dt = new SimpleDateFormat("hh:mm:ss");
     private Text txtTime;
-    public  TableView tab_viev;
-    private List<Computer> listaKlientow = new ArrayList<Computer>();
-
     private Server ser1;
+
+    /**
+     * Purpose of this method is to start whole program. First it create new server object.
+     * Later this call method setStage with param stage.
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
 
@@ -49,17 +53,7 @@ public class FxSample extends Application {
         setStage(stage);
 
     }
-    /*
-    private TextField getTextField()
-    {
-        TextField input = new TextField();
-        input.setOnAction(e -> {
-            client.sendMessage(input.getText());
-            input.setText("");
-        });
-        return input;
-    }
-    */
+
 
     private TextArea getTextArea()
     {
@@ -82,69 +76,65 @@ public class FxSample extends Application {
         BorderPane root = new BorderPane();
         root.setBottom(this.input);
         root.setRight(this.window);
-
-        //root.setRight(this.tab_viev);
         root.setLeft(this.txtTime);
         return root;
     }
+
+    /**
+     * This method create stage and starts timer. Window is Text Area whose purpose is to display logs (connections etc.)
+     * @param stage this is provided by javafx in start function
+     */
     private void setStage(Stage stage)
     {
         this.window = this.getTextArea();
         this.txtTime = this.getText();
-        this.tab_viev = new TableView();
-        prepTable();
         Scene scene = new Scene(this.getRoot(), 600, 600);
         stage.setScene(scene);
         stage.setResizable(false);
-        stage.setTitle("Chat");
+        stage.setTitle("Server");
         startTimer();
         stage.show();
     }
+
+    /**
+     * This method starts a clock that provides time to all client.
+     */
     private void startTimer(){
         Thread timer = new Thread(() -> {
             while (!enough) {
                 time_server+=1000;
-
                 try {
                     // running "long" operation not on UI thread
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
+                    System.out.println("Timer exception: "
+                            + ex.getMessage());
                 }
                 final String time = dt.format(time_server);
                 Platform.runLater(() -> {
                     // updating live UI object requires JavaFX App Thread
                     txtTime.setText(time);
-                    //testt();
-
                 });
             }
         });
         timer.start();
     }
 
-    public void prepTable(){
-        TableColumn<Computer, Integer> column1 = new TableColumn<>("Numer");
-        column1.setCellValueFactory(new PropertyValueFactory<>("numer_komp"));
-
-        //this.tab_viev.getColumns().add(column4);
-
-
-    }
-    public void addClient(String adres_ip, Integer czas, Integer drift){
-        /*Computer cmp = new Computer(adres_ip,czas,drift);
-        if(!this.listaKlientow.contains(cmp)){
-            this.listaKlientow.add(new Computer(adres_ip,czas,drift));
-        }
-
-        this.tab_viev.getItems().add();
-
-         */
-    }
-
+    /**
+     * This metod is adding new messeges to GUI
+     * @param message - message that will be shown in GUI (logs)
+     */
     public void setMessage(String message)
     {
         Platform.runLater(() -> FxSample.this.window.appendText("\n" + message));
     }
+
+    /**
+     * Main is seating system property, security manager and launch app.
+     * System property must be set in order to communicate by rmi in Lan network.
+     * idk why Security manager is necessary but without it it did not work.
+     * @param args idk
+     */
     public static void main(String[] args)
     {
         System.setProperty("java.rmi.server.hostname","192.168.0.106");
