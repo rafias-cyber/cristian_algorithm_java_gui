@@ -15,6 +15,8 @@ public class client_without_GUI {
     private SimpleDateFormat dt = new SimpleDateFormat("hh:mm:ss");
     private int delay_min =0;
     private int delay_max =0;
+    private int t0;
+    private int t1;
     public client_without_GUI() {
 
         Scanner scanner = new Scanner(System.in);
@@ -38,11 +40,19 @@ public class client_without_GUI {
                     + e.getMessage());
         }
         try {
-            int res = obj.getTime();
             Random random = new Random();
-            TimeUnit.SECONDS.sleep(random.nextInt(delay_max - delay_min) + delay_min);
+            this.t0 = this.time_client;
+            int res = obj.getTime();
+            if(delay_max!=delay_min) {
+                TimeUnit.SECONDS.sleep(random.nextInt(delay_max - delay_min) + delay_min);
+
+            }
+            else{
+                TimeUnit.SECONDS.sleep(delay_max);
+            }
+            this.t1 = this.time_client;
             System.out.println("info: otrzymano: " +dt.format(res));
-            this.time_client = (this.time_client+(int)res)/2;
+            this.time_client = ( res + ( this.t1 - this.t0)/2);
 
         } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();

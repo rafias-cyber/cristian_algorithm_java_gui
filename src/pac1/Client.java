@@ -22,6 +22,8 @@ public class Client {
 
     private int delay_min = 0;
     private int delay_max = 0;
+    private int t0;
+    private int t1;
     private SimpleDateFormat dt = new SimpleDateFormat("hh:mm:ss");
     Client(ClientGui cGui) {
         this.gui = cGui;
@@ -43,11 +45,19 @@ public class Client {
         }
 
         try {
-            int res = obj.getTime();
             Random random = new Random();
-            TimeUnit.SECONDS.sleep(random.nextInt(delay_max - delay_min) + delay_min);
+            this.t0 = this.gui.getTime_client();
+            int res = obj.getTime();
+            if(delay_max!=delay_min) {
+                TimeUnit.SECONDS.sleep(random.nextInt(delay_max - delay_min) + delay_min);
+            }
+            else{
+                TimeUnit.SECONDS.sleep(delay_max);
+            }
+            this.t1 = this.gui.getTime_client();
             System.out.println("info: otrzymano: " +dt.format(res));
-            this.gui.setTime_client((this.gui.getTime_client()+res)/2);
+
+            this.gui.setTime_client(( res + ( this.t1 - this.t0)/2));
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
