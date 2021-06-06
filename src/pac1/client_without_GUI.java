@@ -4,14 +4,25 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.text.SimpleDateFormat;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class client_without_GUI {
     static Hello obj = null;
     private int time_client=0;
     private boolean enough = false;
     private SimpleDateFormat dt = new SimpleDateFormat("hh:mm:ss");
-
+    private int delay_min =0;
+    private int delay_max =0;
     public client_without_GUI() {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Podaj opoznienie w sekundach (min): ");
+        this.delay_min = scanner.nextInt();
+        System.out.print("Podaj opoznienie w sekundach (max): ");
+        this.delay_max = scanner.nextInt();
+        scanner.close();
         startTimer();
     }
 
@@ -28,10 +39,12 @@ public class client_without_GUI {
         }
         try {
             int res = obj.getTime();
+            Random random = new Random();
+            TimeUnit.SECONDS.sleep(random.nextInt(delay_max - delay_min) + delay_min);
             System.out.println("info: otrzymano: " +dt.format(res));
             this.time_client = (this.time_client+(int)res)/2;
 
-        } catch (RemoteException e) {
+        } catch (RemoteException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -45,7 +58,7 @@ public class client_without_GUI {
         Thread timer = new Thread(() -> {
             while (!enough) {
                 time_client+=1000;
-                if(time_client%10000==0){
+                if((time_client/1000)%10==0){
                     this.callServer();
                 }
                 try {
