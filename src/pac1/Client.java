@@ -11,17 +11,20 @@ import java.util.concurrent.TimeUnit;
 public class Client {
     static Hello obj = null;
     private final ClientGui gui;
-    private int delay_min =0;
-    private int delay_max =0;
+
+    public void setDelay_min(int delay_min) {
+        this.delay_min = delay_min;
+    }
+
+    public void setDelay_max(int delay_max) {
+        this.delay_max = delay_max;
+    }
+
+    private int delay_min = 0;
+    private int delay_max = 0;
     private SimpleDateFormat dt = new SimpleDateFormat("hh:mm:ss");
     Client(ClientGui cGui) {
         this.gui = cGui;
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Podaj opoznienie w sekundach (min): ");
-        this.delay_min = scanner.nextInt();
-        System.out.print(" \n Podaj opoznienie w sekundach (max): ");
-        this.delay_max = scanner.nextInt();
-        scanner.close();
     }
 
     /**

@@ -7,7 +7,9 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -28,6 +30,9 @@ public class ClientGui extends Application {
     private Text txtTime;
     private Client client;
     private Button b;
+    private TextField txtMinDelay;
+    private TextField txtMaxDelay;
+    private Button b0;
 
     /**
      *
@@ -44,6 +49,21 @@ public class ClientGui extends Application {
     private BorderPane getRoot()
     {
         BorderPane root = new BorderPane();
+        this.txtMinDelay = new TextField();
+        this.txtMaxDelay = new TextField();
+        this.txtMinDelay.setText("0");
+        this.txtMaxDelay.setText("0");
+        this.b0 = new Button();
+        this.b0.setText("Set param");
+        EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e){
+                test1();
+            }
+        };
+        this.b0.setOnAction(event1);
+        FlowPane tmp1 = new FlowPane();
+        tmp1.getChildren().addAll(this.txtMinDelay, this.txtMaxDelay,this.b0);
+        root.setLeft(tmp1);
         root.setCenter(this.txtTime);
         root.setBottom(this.b);
         return root;
@@ -56,8 +76,11 @@ public class ClientGui extends Application {
     private void test0(){
         this.client.callServer();
     }
-
-
+    private void test1() {
+        this.client.setDelay_max(Integer.parseInt(this.txtMaxDelay.getText()));
+        this.client.setDelay_min(Integer.parseInt(this.txtMinDelay.getText()));
+        System.out.println("Params set");
+    }
     /**
      * Purpose of this method is to build a stage.
      * Method test0 is called when button is pressed.
@@ -75,6 +98,7 @@ public class ClientGui extends Application {
             }
         };
         b.setOnAction(event);
+
         Scene scene = new Scene(this.getRoot(), 600, 600);
         stage.setScene(scene);
         stage.setResizable(false);
