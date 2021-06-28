@@ -137,7 +137,7 @@ public class FxSample extends Application {
      */
     public static void main(String[] args)
     {
-        System.setProperty("java.rmi.server.hostname","192.168.0.106");
+        System.setProperty("java.rmi.server.hostname","localhost");
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }

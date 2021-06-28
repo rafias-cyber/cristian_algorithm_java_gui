@@ -31,7 +31,7 @@ public class client_without_GUI {
 
     public void callServer(){
         try {
-            Registry registry = LocateRegistry.getRegistry("192.168.0.106");
+            Registry registry = LocateRegistry.getRegistry("10.6.121.59");
             System.out.println("info: Znaleziono rejestr");
             obj = (Hello) registry.lookup("Hello");
             System.out.println("info: Poczaczono z serwerem");
